@@ -14,7 +14,21 @@ WEMOS_D1_Accel::WEMOS_D1_Accel(Adafruit_ADXL345_Unified accel)
 {
   accel = Adafruit_ADXL345_Unified(12345);
   _accel = accel;
-  float averageAccel[3];
+  
+  float AccelX[_sizeOfAccelArray];
+  float AccelY[_sizeOfAccelArray];
+  float AccelZ[_sizeOfAccelArray];
+  
+  int sizeOfAccelArray = 600;
+  _sizeOfAccelArray = sizeOfAccelArray;
+  
+  int samplingInterval = 50; //ms
+  _samplingInterval = samplingInterval;
+  
+  static char* OOCSIName = "Vitality@Work/Accelerometer1";
+  for(int i = 0; i < sizeof(OOCSIName); ++i)
+	  _OOCSIName[i] = OOCSIName[i]; 
+  
   Serial.begin(9600);
 }
 
@@ -142,12 +156,13 @@ void WEMOS_D1_Accel::setupAccel()
   // Serial.println(" ");
 }
 void WEMOS_D1_Accel::takeAccelMeasurement(){
-  for(int i = 0; i < 1000; i++){
+  for(int i = 0; i < _sizeOfAccelArray; i++){
     sensors_event_t event; 
     _accel.getEvent(&event);
-    averageAccel[0] = averageAccel[0] + event.acceleration.x/1000;
-    averageAccel[1] = averageAccel[1] + event.acceleration.y/1000;
-    averageAccel[2] = averageAccel[2] + event.acceleration.z/1000;
+    AccelX[i] = event.acceleration.x;
+    AccelY[i] = event.acceleration.y;
+    AccelZ[i] = event.acceleration.z;
+	delay(_samplingInterval);
   }
 //  getTimeStamp();
 }

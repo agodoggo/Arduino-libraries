@@ -15,7 +15,9 @@ class WEMOS_D1_Accel
 {
   public:
     WEMOS_D1_Accel(Adafruit_ADXL345_Unified accel);
-    float averageAccel[3];
+    float AccelX[600];
+	float AccelY[600];
+	float AccelZ[600];
 	void displaySensorDetails();
     void displayDataRate();
     void displayRange();
@@ -23,6 +25,9 @@ class WEMOS_D1_Accel
 	void takeAccelMeasurement();
   private:
     Adafruit_ADXL345_Unified _accel;
+	char* _OOCSIName;
+	int _sizeOfAccelArray; //600
+	int _samplingInterval;
 };
 
 #endif

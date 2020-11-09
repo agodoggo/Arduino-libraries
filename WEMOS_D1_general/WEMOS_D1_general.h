@@ -25,6 +25,9 @@ class WEMOS_D1_general
 	void WiFiOff();
   private:
 	int _chipSelect;
+	char* _ssid;
+	char* _password;
+	char* _hostserver;
 	char _TimeStampBuf[40];
 	char _daysOfTheWeek[7][12];
 	int _FPM_SLEEP_MAX_TIME;           

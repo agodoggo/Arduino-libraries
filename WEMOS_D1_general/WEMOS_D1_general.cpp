@@ -20,7 +20,7 @@ WEMOS_D1_general::WEMOS_D1_general()
   _chipSelect = chipSelect;
   
   char TimeStampBuf[40];
-  for(int l = 0; l < 40; ++l)
+  for(int i = 0; i < 40; ++i)
 	  _TimeStampBuf[l] = TimeStampBuf[l];
   
   int FPM_SLEEP_MAX_TIME = 0xFFFFFFF;
@@ -33,9 +33,23 @@ WEMOS_D1_general::WEMOS_D1_general()
   _fileName = fileName;
   
   static char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-  for(int i = 0; i < 7; ++i)
+  for(i = 0; i < 7; ++i)
 	  for (int j = 0; j < 12; ++j)
 		  _daysOfTheWeek[i][j] = daysOfTheWeek[i][j];
+  
+  char* ssid = "tue-psk";
+  for(i = 0; i < sizeof(ssid); ++i)
+	  _ssid[i] = ssid[i];
+  
+  char* password = "!Demoday1";
+  for(i = 0; i < sizeof(password); ++i)
+	  _password[i] = password[i];
+  
+  char* hostserver = "oocsi.id.tue.nl";
+  for(i = 0; i < sizeof(hostserver); ++i)
+	  _hostserver[i] = hostserver[i];
+  
+  
   RTC_DS1307 rtc;
   _rtc = rtc;
   
