@@ -18,13 +18,24 @@ WEMOS_D1_general::WEMOS_D1_general()
 {
   int chipSelect = D4;
   _chipSelect = chipSelect;
-  char _TimeStampBuf[40];
+  
+  char TimeStampBuf[40];
+  for(int l = 0; l < 40; ++l)
+	  _TimeStampBuf[l] = TimeStampBuf[l];
+  
+  int FPM_SLEEP_MAX_TIME = 0xFFFFFFF;
+  _FPM_SLEEP_MAX_TIME = FPM_SLEEP_MAX_TIME;
+  
   File myFile;
   _myFile = myFile;
+  
   String fileName = "test.txt";
-  strcpy(_fileName,fileName);
+  _fileName = fileName;
+  
   static char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-  strcpy(_daysOfTheWeek,daysOfTheWeek);
+  for(int i = 0; i < 7; ++i)
+	  for (int j = 0; j < 12; ++j)
+		  _daysOfTheWeek[i][j] = daysOfTheWeek[i][j];
   RTC_DS1307 rtc;
   _rtc = rtc;
   
@@ -105,5 +116,5 @@ void WEMOS_D1_general::WiFiOff() {
     wifi_set_opmode(NULL_MODE);
     wifi_set_sleep_type(MODEM_SLEEP_T);
     wifi_fpm_open();
-    wifi_fpm_do_sleep(FPM_SLEEP_MAX_TIME);
+    wifi_fpm_do_sleep(_FPM_SLEEP_MAX_TIME);
 }

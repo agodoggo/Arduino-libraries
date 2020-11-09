@@ -27,6 +27,7 @@ class WEMOS_D1_general
 	int _chipSelect;
 	char _TimeStampBuf[40];
 	char _daysOfTheWeek[7][12];
+	int _FPM_SLEEP_MAX_TIME;           
 	File _myFile;
 	String _fileName;
 	RTC_DS1307 _rtc;
