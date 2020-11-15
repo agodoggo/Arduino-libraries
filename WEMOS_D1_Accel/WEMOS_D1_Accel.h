@@ -11,23 +11,28 @@
 #include "Adafruit_Sensor.h"
 #include "Adafruit_ADXL345_U.h"
 
+#include "WEMOS_D1_general.h"
+
 class WEMOS_D1_Accel
 {
   public:
     WEMOS_D1_Accel(Adafruit_ADXL345_Unified accel);
-    float AccelX[600];
-	float AccelY[600];
-	float AccelZ[600];
+	char* OOCSIName;
+    float AccelX[20];
+	float AccelY[20];
+	float AccelZ[20];
+	int timeStampArr[20];
 	void displaySensorDetails();
     void displayDataRate();
     void displayRange();
     void setupAccel();
 	void takeAccelMeasurement();
   private:
-    Adafruit_ADXL345_Unified _accel;
-	char* _OOCSIName;
+	WEMOS_D1_general _myWEMOS_D1_general;
+	Adafruit_ADXL345_Unified _accel;
 	int _sizeOfAccelArray; //600
 	int _samplingInterval;
+	int _samplingIntervalAvg;
 };
 
 #endif

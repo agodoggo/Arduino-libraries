@@ -9,9 +9,13 @@
 #include "Adafruit_ADXL345_U.h"
 
 #include "WEMOS_D1_Accel.h"
+#include "WEMOS_D1_general.h"
 
 WEMOS_D1_Accel::WEMOS_D1_Accel(Adafruit_ADXL345_Unified accel)
 {
+  WEMOS_D1_general myWEMOS_D1_general;
+  _myWEMOS_D1_general = myWEMOS_D1_general;
+	
   accel = Adafruit_ADXL345_Unified(12345);
   _accel = accel;
   
@@ -19,15 +23,18 @@ WEMOS_D1_Accel::WEMOS_D1_Accel(Adafruit_ADXL345_Unified accel)
   float AccelY[_sizeOfAccelArray];
   float AccelZ[_sizeOfAccelArray];
   
-  int sizeOfAccelArray = 600;
+  int timeStampArr[_sizeOfAccelArray];
+  
+  OOCSIName = "Vitality@Work/Accelerometer1";
+  
+  int sizeOfAccelArray = 20;
   _sizeOfAccelArray = sizeOfAccelArray;
   
-  int samplingInterval = 50; //ms
+  int samplingInterval = 1000; //ms
   _samplingInterval = samplingInterval;
   
-  static char* OOCSIName = "Vitality@Work/Accelerometer1";
-  for(int i = 0; i < sizeof(OOCSIName); ++i)
-	  _OOCSIName[i] = OOCSIName[i]; 
+  int samplingIntervalAvg = 50; //ms
+  _samplingIntervalAvg = samplingInterval;
   
   Serial.begin(9600);
 }
@@ -134,35 +141,25 @@ void WEMOS_D1_Accel::displayRange()
 }
 void WEMOS_D1_Accel::setupAccel()
 {
-	//setup for Accelerometer1
-  /* Initialise the sensor */
   if(!_accel.begin())
   {
-    /* There was a problem detecting the ADXL345 ... check your connections */
     Serial.println("Ooops, no ADXL345 detected ... Check your wiring!");
   }
-  /* Set the range to whatever is appropriate for your project */
   _accel.setRange(ADXL345_RANGE_16_G);
-  // accel.setRange(ADXL345_RANGE_8_G);
-  // accel.setRange(ADXL345_RANGE_4_G);
-  // accel.setRange(ADXL345_RANGE_2_G);
-  
-  // /* Display some basic information on this sensor */
-  // displaySensorDetails();
-  
-  // /* Display additional settings (outside the scope of sensor_t) */
-  // displayDataRate();
-  // displayRange();
-  // Serial.println(" ");
 }
 void WEMOS_D1_Accel::takeAccelMeasurement(){
-  for(int i = 0; i < _sizeOfAccelArray; i++){
-    sensors_event_t event; 
-    _accel.getEvent(&event);
-    AccelX[i] = event.acceleration.x;
-    AccelY[i] = event.acceleration.y;
-    AccelZ[i] = event.acceleration.z;
-	delay(_samplingInterval);
+	for(int i = 0; i < _sizeOfAccelArray; i++){
+		for(int j = 0; j < _sizeOfPiezoArray; j++){
+			sensors_event_t event; 
+			_accel.getEvent(&event);
+			AccelX[i] = event.acceleration.x / _sizeOfPiezoArray;
+			AccelY[i] = event.acceleration.y / _sizeOfPiezoArray;
+			AccelZ[i] = event.acceleration.z / _sizeOfPiezoArray;
+			delay(_samplingIntervalAvg);
+		}
+		_myWEMOS_D1_general.getTimeStamp();
+		timeStampArr[i] = _myWEMOS_D1_general.TimeStampBuf;
+		delay(_samplingInterval);
+	}
   }
-//  getTimeStamp();
 }

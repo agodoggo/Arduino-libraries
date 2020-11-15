@@ -5,7 +5,7 @@
 */
 
 #include "Arduino.h"
-#include <ESP8266WiFi.h>
+// #include "ESP8266WiFi.h"
 #include "SPI.h"
 #include "SD.h"
 #include "Wire.h"
@@ -16,44 +16,17 @@
 
 WEMOS_D1_general::WEMOS_D1_general()
 {
-  int chipSelect = D4;
-  _chipSelect = chipSelect;
+	ssid = "tue-psk";
+	password = "!Demoday1";
+	hostserver = "oocsi.id.tue.nl";
+	
+	int chipSelect = D4;
+	_chipSelect = chipSelect;
+
+	int FPM_SLEEP_MAX_TIME = 0xFFFFFFF;
+	_FPM_SLEEP_MAX_TIME = FPM_SLEEP_MAX_TIME;
   
-  char TimeStampBuf[40];
-  for(int i = 0; i < 40; ++i)
-	  _TimeStampBuf[l] = TimeStampBuf[l];
-  
-  int FPM_SLEEP_MAX_TIME = 0xFFFFFFF;
-  _FPM_SLEEP_MAX_TIME = FPM_SLEEP_MAX_TIME;
-  
-  File myFile;
-  _myFile = myFile;
-  
-  String fileName = "test.txt";
-  _fileName = fileName;
-  
-  static char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-  for(i = 0; i < 7; ++i)
-	  for (int j = 0; j < 12; ++j)
-		  _daysOfTheWeek[i][j] = daysOfTheWeek[i][j];
-  
-  char* ssid = "tue-psk";
-  for(i = 0; i < sizeof(ssid); ++i)
-	  _ssid[i] = ssid[i];
-  
-  char* password = "!Demoday1";
-  for(i = 0; i < sizeof(password); ++i)
-	  _password[i] = password[i];
-  
-  char* hostserver = "oocsi.id.tue.nl";
-  for(i = 0; i < sizeof(hostserver); ++i)
-	  _hostserver[i] = hostserver[i];
-  
-  
-  RTC_DS1307 rtc;
-  _rtc = rtc;
-  
-  Serial.begin(9600);
+	Serial.begin(9600);
 }
 
 void WEMOS_D1_general::setupSD(){
@@ -68,51 +41,33 @@ void WEMOS_D1_general::setupSD(){
 }
 
 void WEMOS_D1_general::setupRTC(){
-  if (!_rtc.begin()) {
+  if (!rtc.begin()) {
     Serial.println("Couldn't find RTC");
     Serial.flush();
     abort();
   }
 
-  if (!_rtc.isrunning()) {
+  if (!rtc.isrunning()) {
     Serial.println("RTC is NOT running, let's set the time!");
-    _rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
   }
+  
+  rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
 }
 
 void WEMOS_D1_general::getTimeStamp() {
-    DateTime now = _rtc.now();
-//    Serial.print(now.year(), DEC);
-//    Serial.print('/');
-//    Serial.print(now.month(), DEC);
-//    Serial.print('/');
-//    Serial.print(now.day(), DEC);
-//    Serial.print(" (");
-//    Serial.print(daysOfTheWeek[now.dayOfTheWeek()]);
-//    Serial.print(") ");
-//    Serial.print(now.hour(), DEC);
-//    Serial.print(':');
-//    Serial.print(now.minute(), DEC);
-//    Serial.print(':');
-//    Serial.print(now.second(), DEC);
-//    Serial.println();
-
-//    byte currHour = now.hour();
-//    byte currMinute = now.minute();
-//    byte currSecond = now.second();
-
-    sprintf(_TimeStampBuf, "%02d/%02d/%02d(%s)-%02d:%02d:%02d", now.year(),now.month(),now.day(),_daysOfTheWeek[now.dayOfTheWeek()],now.hour(), now.minute(), now.second());
+    DateTime now = rtc.now();
+    TimeStampBuf = now.unixtime();
 }
 
-void WEMOS_D1_general::writeSD(){
-	_myFile = SD.open(_fileName, FILE_WRITE);
+void WEMOS_D1_general::writeSD(String value){
+	myFile = SD.open(fileName, FILE_WRITE);
 	// if the file opened okay, write to it:
-	if (_myFile) 
+	if (myFile) 
 	{
-		Serial.print("Writing to test.txt...");
-		_myFile.println(_TimeStampBuf);
+		myFile.println(value);
 		// close the file:
-		_myFile.close();
+		myFile.close();
 		Serial.println("done.");
 	}
 	else

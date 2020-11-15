@@ -21,19 +21,18 @@ class WEMOS_D1_general
     void setupSD();
 	void setupRTC();
 	void getTimeStamp();
-	void writeSD();
+	void writeSD(String value);
 	void WiFiOff();
+	char* ssid;
+	char* password;
+	char* hostserver;
+	int TimeStampBuf;           
+	File myFile;
+	String fileName;
+	RTC_DS1307 rtc;
   private:
 	int _chipSelect;
-	char* _ssid;
-	char* _password;
-	char* _hostserver;
-	char _TimeStampBuf[40];
-	char _daysOfTheWeek[7][12];
-	int _FPM_SLEEP_MAX_TIME;           
-	File _myFile;
-	String _fileName;
-	RTC_DS1307 _rtc;
+	int _FPM_SLEEP_MAX_TIME;
 };
 
 #endif
